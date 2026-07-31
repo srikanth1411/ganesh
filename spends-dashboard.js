@@ -37,10 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('spendTotal').textContent = currency(total);
         document.getElementById('spendYearLabel').textContent = selectedYear === 'All' ? '(All Years)' : `(${selectedYear})`;
         recordsEl.innerHTML = '';
+        if (!records.length) {
+            const row = document.createElement('tr');
+            const cell = document.createElement('td');
+            cell.colSpan = 6; cell.className = 'spend-empty-row'; cell.textContent = 'No data found.';
+            row.appendChild(cell); recordsEl.appendChild(row); return;
+        }
         if (!filtered.length) {
             const row = document.createElement('tr');
             const cell = document.createElement('td');
-            cell.colSpan = 6; cell.className = 'spend-empty-row'; cell.textContent = 'No spends match these filters.';
+            cell.colSpan = 6; cell.className = 'spend-empty-row'; cell.textContent = 'No data found.';
             row.appendChild(cell); recordsEl.appendChild(row); return;
         }
         filtered.sort((a, b) => String(value(b, 'date')).localeCompare(String(value(a, 'date')))).forEach(record => {

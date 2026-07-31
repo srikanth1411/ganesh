@@ -228,9 +228,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 loader.style.display = 'none';
 
                 if (data.status === 'success' && data.data) {
-                    // Save all rows with their original indices
-                    allRows = data.data.slice(1).map((row, index) => ({ row, index }));
+                    const rows = Array.isArray(data.data) ? data.data.slice(1) : [];
+                    allRows = rows.map((row, index) => ({ row, index }));
                     refreshYearOptions();
+                    
+                    if (allRows.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No data found.</td></tr>';
+                        summaryCard.style.display = 'block';
+                        filterSection.style.display = 'flex';
+                        recordsTable.style.display = 'table';
+                        return;
+                    }
                     
                     applyFilters(); // Initial render
                     
@@ -238,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     filterSection.style.display = 'flex';
                     recordsTable.style.display = 'table';
                 } else {
-                    tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No records found yet.</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No data found.</td></tr>';
                     recordsTable.style.display = 'table';
                 }
         } catch (error) {

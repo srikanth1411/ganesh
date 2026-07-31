@@ -74,10 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('ladduYearLabel').textContent = selectedYear === 'All' ? '(All Years)' : `(${selectedYear})`;
 
         recordsEl.innerHTML = '';
+        if (!records.length) {
+            const empty = document.createElement('p');
+            empty.className = 'empty-pending-state';
+            empty.textContent = 'No data found.';
+            recordsEl.appendChild(empty);
+            return;
+        }
         if (!filtered.length) {
             const empty = document.createElement('p');
             empty.className = 'empty-pending-state';
-            empty.textContent = 'No Laddu records match these filters.';
+            empty.textContent = 'No data found.';
             recordsEl.appendChild(empty);
             return;
         }
