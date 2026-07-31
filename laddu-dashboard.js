@@ -103,14 +103,29 @@ document.addEventListener('DOMContentLoaded', () => {
             amounts.className = 'pending-laddu-amounts';
             amounts.innerHTML = `<span>Total ${format(total)}</span><span>Collected ${format(collected)}</span><strong>${balance ? `Due ${format(balance)}` : 'Fully Paid'}</strong>`;
             card.append(title, phoneText, amounts);
+
+            const actions = document.createElement('div');
+            actions.className = 'pending-laddu-actions';
+
+            const notify = document.createElement('button');
+            notify.type = 'button';
+            notify.className = 'action-btn secondary-action';
+            notify.textContent = 'Notify';
+            notify.addEventListener('click', () => {
+                const notifyMessage = `Namaskaram ${name} garu,\n\nCongratulations on winning the Ganesh Laddu auction for ${format(total)}. Your winner details have been recorded successfully. Please visit the collection desk to complete the remaining payment.\n\nMay Lord Ganesha bless you with happiness, prosperity, and peace. 🙏\n\nGanapati Bappa Morya!`;
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(notifyMessage)}`, '_blank');
+            });
+            actions.appendChild(notify);
+
             if (balance > 0) {
                 const collect = document.createElement('a');
                 collect.className = 'action-btn';
                 const recordYear = dateYear(value(record, ['timestamp', 'date']));
                 collect.href = `laddu-collection.html?phone=${encodeURIComponent(phone)}${recordYear ? `&year=${encodeURIComponent(recordYear)}` : ''}`;
                 collect.textContent = 'Collect Now';
-                card.appendChild(collect);
+                actions.appendChild(collect);
             }
+            card.appendChild(actions);
             recordsEl.appendChild(card);
         });
     }

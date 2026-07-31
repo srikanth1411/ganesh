@@ -691,7 +691,23 @@ body {
 .pending-laddu-card p { color: #666; margin-top: 3px; font-size: 0.86rem; }
 .pending-laddu-amounts { display: flex; flex-wrap: wrap; gap: 7px 12px; margin: 14px 0; font-size: 0.83rem; color: #666; }
 .pending-laddu-amounts strong { color: var(--primary-color); }
-.pending-laddu-card .action-btn { display: inline-block; text-decoration: none; }
+.pending-laddu-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+.pending-laddu-card .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.secondary-action {
+    background: rgba(255, 94, 0, 0.12) !important;
+    color: var(--primary-color) !important;
+    border: 1px solid rgba(255, 94, 0, 0.25);
+}
 .empty-pending-state { color: #666; text-align: center; padding: 12px; grid-column: 1 / -1; }
 
 .spend-record-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
