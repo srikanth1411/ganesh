@@ -339,7 +339,61 @@ body {
 }
 
 .staff-home-container {
-    max-width: 900px;
+    max-width: 920px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.summary-card-link {
+    text-decoration: none;
+}
+
+.summary-card {
+    padding: 20px;
+    border-radius: 18px;
+    min-height: 168px;
+    color: white;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.summary-card-amber { background: linear-gradient(135deg, #ff8c42, #ffb347); }
+.summary-card-orange { background: linear-gradient(135deg, #fd6a3e, #ff8350); }
+.summary-card-pink { background: linear-gradient(135deg, #fb4f7a, #ff7d8e); }
+
+.summary-chip {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.summary-card h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.summary-metric {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.summary-note {
+    margin: 0;
+    opacity: 0.92;
+    font-size: 0.9rem;
 }
 
 .staff-grid {
@@ -969,9 +1023,10 @@ tbody tr:hover {
         padding: 13px 14px;
     }
 
-    .summary-breakdown, .summary-breakdown.three-columns, .pending-laddu-list, .spend-record-list, .staff-grid { grid-template-columns: 1fr; }
+    .summary-breakdown, .summary-breakdown.three-columns, .pending-laddu-list, .spend-record-list, .staff-grid, .summary-grid { grid-template-columns: 1fr; }
     .pending-laddu-section { padding: 18px; }
     .staff-card { min-height: auto; }
+    .summary-card { min-height: 150px; }
 
     /* Form inputs — 16px prevents zoom on iOS */
     .form-group input,
