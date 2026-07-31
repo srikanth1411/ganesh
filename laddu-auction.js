@@ -163,6 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
             await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: data, mode: 'no-cors' });
             setMessage('Auction details and signature have been sent. Please verify them in the Sheet.', 'success');
             sendWhatsApp(`91${phoneDigits}`, `Namaskaram ${name} garu,\n\nYour Ganesh Laddu auction amount of ₹${amount.toLocaleString('en-IN')} has been recorded successfully.\n\nThank you for your support! May Lord Ganesha bless you. 🙏\n\nGanapati Bappa Morya!`);
+            window.GaneshSuccessScreen?.show({
+                title: 'Auction Saved',
+                message: `Auction details for ${name} have been recorded successfully. The WhatsApp message has also been opened.`,
+                buttonText: 'Done'
+            });
             form.reset();
             signatureStarted = false;
             photoDataUrl = '';
@@ -173,6 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sizeCanvas();
         } catch (error) {
             setMessage('Could not save the auction details. Please try again.', 'error');
+            window.GaneshSuccessScreen?.show({
+                title: 'Auction Not Saved',
+                message: 'The auction details could not be saved. Please try again.',
+                buttonText: 'Retry'
+            });
         } finally {
             saveBtn.disabled = false;
             saveBtn.textContent = 'Save Auction Details';

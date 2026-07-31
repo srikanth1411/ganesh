@@ -210,6 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `Namaskaram ${auction.name} garu,\n\nWe received ₹${amount.toLocaleString('en-IN')} towards your ${collectionName} contribution. Your remaining balance is ₹${balanceAfterPayment.toLocaleString('en-IN')}.\n\nThank you! 🙏\n\nGanapati Bappa Morya!`
                 : `Namaskaram ${auction.name} garu,\n\nWe received your final payment of ₹${amount.toLocaleString('en-IN')} towards the ${collectionName}. Your contribution is now fully paid.\n\nThank you! 🙏\n\nGanapati Bappa Morya!`;
             sendWhatsApp(auction.phone, paymentMessage);
+            window.GaneshSuccessScreen?.show({
+                title: 'Payment Recorded',
+                message: `${collectionName} payment of ₹${amount.toLocaleString('en-IN')} has been captured successfully. The WhatsApp confirmation message has also been opened.`,
+                buttonText: 'Done'
+            });
             auction.collected += amount;
             auction.balance -= amount;
             paymentInput.value = '';
@@ -218,6 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
             drawAuctionDetails();
         } catch (error) {
             setMessage('The payment could not be sent. Please try again.', 'error');
+            window.GaneshSuccessScreen?.show({
+                title: 'Payment Not Saved',
+                message: 'The payment could not be recorded. Please try again.',
+                buttonText: 'Retry'
+            });
         } finally {
             collectBtn.textContent = 'Record Payment';
             collectBtn.disabled = !auction || auction.balance <= 0;

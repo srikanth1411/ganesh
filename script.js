@@ -67,8 +67,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 mode: 'no-cors' // This avoids CORS errors but hides the response
             }).then(() => {
                 console.log('Data successfully sent to Google Sheets');
+                window.GaneshSuccessScreen?.show({
+                    title: 'Chanda Recorded',
+                    message: 'Your contribution request has been sent successfully. The WhatsApp message has also been opened.',
+                    buttonText: 'Done'
+                });
             }).catch(error => {
                 console.error('Error sending data to Google Sheets:', error);
+                window.GaneshSuccessScreen?.show({
+                    title: 'Save Failed',
+                    message: 'The form could not be saved right now. Please try again.',
+                    buttonText: 'Retry'
+                });
             });
         }
         // ---------------------------------
@@ -77,6 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const whatsappUrl = `https://wa.me/${phone}?text=${encodedMessage}`;
         
         window.open(whatsappUrl, '_blank');
+
+        if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE') {
+            window.GaneshSuccessScreen?.show({
+                title: 'WhatsApp Ready',
+                message: 'The fundraiser form is ready. Please update the Google Apps Script URL to enable sheet saving.',
+                buttonText: 'Close'
+            });
+        }
 
         // Optional: Reset form or show success message
         // form.reset();
