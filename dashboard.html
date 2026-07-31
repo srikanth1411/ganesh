@@ -10,14 +10,17 @@
 <body>
     <div class="background-decor"></div>
     <nav class="top-nav" aria-label="Main navigation">
-        <a href="staff-dashboard.html">Home</a>
-        <a href="dashboard.html">Chanda Dashboard</a>
-        <a href="laddu-dashboard.html">Laddu Dashboard</a>
-        <a href="spends-dashboard.html">Spends Dashboard</a>
-        <a href="laddu-auction.html">Laddu Auction</a>
-        <a href="laddu-collection.html">Laddu Collection</a>
-        <a href="spends.html">Spends</a>
-        <a href="#" id="logoutBtn" class="logout-btn">Logout</a>
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">⋮</button>
+        <div class="top-nav-links">
+            <a href="staff-dashboard.html">Home</a>
+            <a href="dashboard.html">Chanda Dashboard</a>
+            <a href="laddu-dashboard.html">Laddu Dashboard</a>
+            <a href="spends-dashboard.html">Spends Dashboard</a>
+            <a href="laddu-auction.html">Laddu Auction</a>
+            <a href="laddu-collection.html">Laddu Collection</a>
+            <a href="spends.html">Spends</a>
+            <a href="#" id="logoutBtn" class="logout-btn">Logout</a>
+        </div>
     </nav>
     
     <div class="container dashboard-container">
@@ -74,6 +77,7 @@
     </div>
 
     <script src="auth.js"></script>
+    <script src="nav-toggle.js"></script>
     <script src="dashboard.js"></script>
 </body>
 </html>

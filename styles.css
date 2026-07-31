@@ -74,6 +74,14 @@ body {
     -webkit-backdrop-filter: blur(8px);
 }
 
+.top-nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 .top-nav a {
     color: var(--text-light);
     text-decoration: none;
@@ -87,6 +95,20 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+.nav-toggle {
+    display: none;
+    appearance: none;
+    border: none;
+    background: rgba(255, 255, 255, 0.22);
+    color: white;
+    cursor: pointer;
+    border-radius: 999px;
+    width: 42px;
+    height: 42px;
+    font-size: 1.25rem;
+    line-height: 1;
 }
 
 .top-nav a:hover {
@@ -770,12 +792,32 @@ tbody tr:hover {
     .top-nav {
         padding: 10px;
         gap: 6px;
+        align-items: center;
+    }
+
+    .nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .top-nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 6px;
+    }
+
+    .top-nav.nav-open .top-nav-links {
+        display: flex;
     }
 
     .top-nav a {
         font-size: 0.85rem;
         padding: 8px 11px;
         min-height: 38px;
+        width: 100%;
     }
 
     .container {
