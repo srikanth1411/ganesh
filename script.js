@@ -36,13 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Construct the message
         let message = '';
-        const imageUrl = "https://drive.google.com/file/d/1mHyP2qE3fQPp5nxO2vUPlpNAN5Nr4I5Z"; // Replace with your actual image URL
         if (dueDate) {
             const dateObj = new Date(dueDate);
             const formattedDate = isNaN(dateObj.getTime()) ? dueDate : dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
             message = `Namaskaram ${name} garu,\n\nThank you for your generous pledge of ₹${amount} towards the Ganesh Chanda. This is a gentle reminder that the scheduled due date for your contribution is ${formattedDate}.\n\nPlease complete the payment at your earliest convenience.\n\nMay Lord Ganesha bless you! 🙏\n\nGanapati Bappa Morya!\n\nThanks & Regards \nSikhwada Youth Association`;
         } else {
-            message = `${imageUrl}\n\nNamaskaram ${name} garu,\n\nThank you for your generous contribution of ₹${amount} towards the Ganesh Chanda.\n\nMay Lord Ganesha bless you with health, wealth, and happiness! 🙏\n\nGanapati Bappa Morya!\n\nThanks & Regards \nSikhwada Youth Association`;
+            message = `Namaskaram ${name} garu,\n\nThank you for your generous contribution of ₹${amount} towards the Ganesh Chanda.\n\nMay Lord Ganesha bless you with health, wealth, and happiness! 🙏\n\nGanapati Bappa Morya!\n\nThanks & Regards \nSikhwada Youth Association`;
         }
 
         // Encode message for URL
