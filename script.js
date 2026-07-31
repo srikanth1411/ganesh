@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dueDate) {
             const dateObj = new Date(dueDate);
             const formattedDate = isNaN(dateObj.getTime()) ? dueDate : dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-            message = `Namaskaram ${name} garu,\n\nThank you for your generous pledge of ₹${amount} towards the Ganesh Chanda. This is a gentle reminder that the scheduled due date for your contribution is ${formattedDate}.\n\nPlease complete the payment at your earliest convenience.\n\nMay Lord Ganesha bless you! 🙏\n\nGanapati Bappa Morya!\n\nThanks & Regards \nSikhwada Youth Association`;
+            message = `Namaskaram ${name} garu,\n\nThank you for your generous pledge of ₹${amount} towards the Ganesh Chanda.\n\nThis is a gentle reminder that your contribution of ₹${amount} is due on ${formattedDate}.\n\n💳 Kindly make your payment via PhonePe / Google Pay / UPI to:\n\n📱 7702219049\n\nPlease complete the payment at your earliest convenience.\n\nMay Lord Ganesha bless you with health, wealth, and happiness! 🙏\n\nGanapati Bappa Morya! 🪔\n\nThanks & Regards,\nSikhwada Youth Association`;
         } else {
             message = `Namaskaram ${name} garu,\n\nThank you for your generous contribution of ₹${amount} towards the Ganesh Chanda.\n\nMay Lord Ganesha bless you with health, wealth, and happiness! 🙏\n\nGanapati Bappa Morya!\n\nThanks & Regards \nSikhwada Youth Association`;
         }

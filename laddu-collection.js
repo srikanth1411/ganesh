@@ -208,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const balanceAfterPayment = auction.balance - amount;
             const collectionName = isChandaCollection ? 'Ganesh Chanda' : 'Ganesh Laddu';
             const paymentMessage = balanceAfterPayment > 0
-                ? `Namaskaram ${auction.name} garu,\n\nWe received ₹${amount.toLocaleString('en-IN')} towards your ${collectionName} contribution. Your remaining balance is ₹${balanceAfterPayment.toLocaleString('en-IN')}.\n\nThank you! 🙏\n\nGanapati Bappa Morya! \n\nThanks & Regards \nSikhwada Youth Association`
-                : `Namaskaram ${auction.name} garu,\n\nWe received your final payment of ₹${amount.toLocaleString('en-IN')} towards the ${collectionName}. Your contribution is now fully paid.\n\nThank you! 🙏\n\nGanapati Bappa Morya! \n\nThanks & Regards \nSikhwada Youth Association`;
+                ? `Namaskaram ${auction.name} garu,\n\nThank you for your payment of ₹${amount.toLocaleString('en-IN')} towards the ${collectionName}.\n\nWe have successfully received your payment.\n\nYour remaining balance is ₹${balanceAfterPayment.toLocaleString('en-IN')}.\n\nKindly pay the remaining amount at your earliest convenience via PhonePe / Google Pay / UPI to:\n\n📱 7702219049\n\nThank you for your generous support.\n\nMay Lord Ganesha bless you with health, wealth, and happiness! 🙏\n\nGanapati Bappa Morya! 🪔\n\nThanks & Regards,\nSikhwada Youth Association`
+                : `Namaskaram ${auction.name} garu,\n\nThank you for your payment of ₹${amount.toLocaleString('en-IN')} towards the ${collectionName}.\n\nWe have successfully received your final payment, and your contribution is now fully paid. ✅\n\nWe sincerely appreciate your generous support towards the Ganesh Chanda.\n\nMay Lord Ganesha bless you with health, wealth, and happiness! 🙏\n\nGanapati Bappa Morya! 🪔\n\nThanks & Regards,\nSikhwada Youth Association`;
             sendWhatsApp(auction.phone, paymentMessage);
             window.GaneshSuccessScreen?.show({
                 title: 'Payment Recorded',
