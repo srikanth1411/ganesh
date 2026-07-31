@@ -208,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const balanceAfterPayment = auction.balance - amount;
             const collectionName = isChandaCollection ? 'Ganesh Chanda' : 'Ganesh Laddu';
             const paymentMessage = balanceAfterPayment > 0
-                ? `Namaskaram ${auction.name} garu,\n\nWe received ₹${amount.toLocaleString('en-IN')} towards your ${collectionName} contribution. Your remaining balance is ₹${balanceAfterPayment.toLocaleString('en-IN')}.\n\nThank you! 🙏\n\nGanapati Bappa Morya! \n\nThanks & Regards \n Sikhwada Youth Association`
-                : `Namaskaram ${auction.name} garu,\n\nWe received your final payment of ₹${amount.toLocaleString('en-IN')} towards the ${collectionName}. Your contribution is now fully paid.\n\nThank you! 🙏\n\nGanapati Bappa Morya! \n\nThanks & Regards \n Sikhwada Youth Association`;
+                ? `Namaskaram ${auction.name} garu,\n\nWe received ₹${amount.toLocaleString('en-IN')} towards your ${collectionName} contribution. Your remaining balance is ₹${balanceAfterPayment.toLocaleString('en-IN')}.\n\nThank you! 🙏\n\nGanapati Bappa Morya! \n\nThanks & Regards \nSikhwada Youth Association`
+                : `Namaskaram ${auction.name} garu,\n\nWe received your final payment of ₹${amount.toLocaleString('en-IN')} towards the ${collectionName}. Your contribution is now fully paid.\n\nThank you! 🙏\n\nGanapati Bappa Morya! \n\nThanks & Regards \nSikhwada Youth Association`;
             sendWhatsApp(auction.phone, paymentMessage);
             window.GaneshSuccessScreen?.show({
                 title: 'Payment Recorded',
