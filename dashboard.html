@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ganesh Chanda</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-decor"></div>
+    
+    <div class="container dashboard-container">
+        <div class="header">
+            <h1>Chanda Records</h1>
+            <p>Live data from your Google Sheet</p>
+        </div>
+
+        <div class="summary-card" id="summaryCard" style="display: none;">
+            <h2>Total Amount Collected</h2>
+            <div class="total-amount" id="totalAmount">₹0</div>
+        </div>
+
+        <div class="filter-section" id="filterSection" style="display: none;">
+            <input type="text" id="searchInput" placeholder="Search by name or mobile...">
+            <select id="statusFilter">
+                <option value="All">All Statuses</option>
+                <option value="Paid">Paid</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <div id="loader" class="loader"></div>
+            
+            <table id="recordsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Devotee Name</th>
+                        <th>WhatsApp</th>
+                        <th>Amount (₹)</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be populated here by JS -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer-msg">
+            <a href="index.html" class="dashboard-link">← Back to Form</a>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
