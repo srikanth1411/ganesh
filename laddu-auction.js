@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: data, mode: 'no-cors' });
             setMessage('Auction details and signature have been sent. Please verify them in the Sheet.', 'success');
-            const winnerMessage = `Namaskaram ${name} garu,\n\nCongratulations on winning the Ganesh Laddu auction with the winning amount of ₹${amount.toLocaleString('en-IN')}! Your winner photo and signature have been recorded successfully.\n\nWe are proud to celebrate your participation and wish you health, happiness, and prosperity from Lord Ganesha. 🙏\n\nGanapati Bappa Morya!`;
+            const winnerMessage = `Namaskaram ${name} garu,\n\nCongratulations on winning the Ganesh Laddu auction with the winning amount of ₹${amount.toLocaleString('en-IN')}! Your winner photo and signature have been recorded successfully.\n\nWe are proud to celebrate your participation and wish you health, happiness, and prosperity from Lord Ganesha. 🙏\n\nGanapati Bappa Morya! \n\n Thanks & Regards\n Sikhwada Youth Association`;
             sendWhatsApp(`91${phoneDigits}`, winnerMessage);
             window.GaneshSuccessScreen?.show({
                 title: 'Auction Saved',
