@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laddu Collection - Ganesh Chanda</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-decor"></div>
+    <nav class="top-nav" aria-label="Main navigation">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="index.html">Chanda Details</a>
+        <a href="laddu-auction.html">Laddu Auction</a>
+    </nav>
+
+    <main class="container">
+        <header class="header">
+            <h1>Ganesh Laddu Collection</h1>
+            <p>Record part payments against the Laddu auction amount.</p>
+        </header>
+
+        <form id="ladduCollectionForm" class="glass-form" novalidate>
+            <div class="form-group">
+                <label for="ladduPhone">WhatsApp Number</label>
+                <div class="phone-input-wrapper">
+                    <span class="country-code">+91</span>
+                    <input type="tel" id="ladduPhone" inputmode="numeric" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                </div>
+                <p class="field-help">Enter the auction winner's number to load their Laddu amount.</p>
+            </div>
+
+            <button type="button" id="lookupBtn" class="secondary-btn">Find Auction Details</button>
+
+            <section id="auctionDetails" class="auction-details" hidden aria-live="polite">
+                <div class="auction-detail"><span>Name</span><strong id="auctionName">—</strong></div>
+                <div class="auction-detail"><span>Total Laddu Amount</span><strong id="totalLadduAmount">₹0</strong></div>
+                <div class="auction-detail"><span>Already Collected</span><strong id="alreadyCollected">₹0</strong></div>
+                <div class="auction-detail due"><span>Balance to Collect</span><strong id="balanceDue">₹0</strong></div>
+            </section>
+
+            <div class="form-group">
+                <label for="paymentAmount">Amount Received Now (₹)</label>
+                <input type="number" id="paymentAmount" inputmode="decimal" min="1" step="0.01" placeholder="Enter part payment amount" required disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="signatureCanvas">Payer Signature</label>
+                <div class="signature-panel">
+                    <canvas id="signatureCanvas" aria-label="Signature pad. Sign here with your finger or mouse."></canvas>
+                    <button type="button" id="clearSignature" class="clear-signature">Clear signature</button>
+                </div>
+                <p class="field-help">Sign inside the box using a finger, stylus, or mouse.</p>
+            </div>
+
+            <p id="collectionMessage" class="form-message" role="status" aria-live="polite"></p>
+            <button type="submit" id="collectBtn" class="submit-btn" disabled>Record Payment</button>
+        </form>
+
+        <div class="footer-msg">
+            <a href="index.html" class="dashboard-link">← Back to Chanda Form</a>
+            <a href="laddu-auction.html" class="dashboard-link">Laddu Auction</a>
+            <a href="dashboard.html" class="dashboard-link">View Dashboard</a>
+        </div>
+    </main>
+
+    <script src="laddu-collection.js"></script>
+</body>
+</html>

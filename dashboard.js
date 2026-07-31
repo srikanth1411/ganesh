@@ -7,13 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('tableBody');
     const summaryCard = document.getElementById('summaryCard');
     const totalAmountEl = document.getElementById('totalAmount');
+    const chandaAmountEl = document.getElementById('chandaAmount');
+    const ladduCollectedAmountEl = document.getElementById('ladduCollectedAmount');
+    const ladduAuctionAmountEl = document.getElementById('ladduAuctionAmount');
+    const selectedYearLabel = document.getElementById('selectedYearLabel');
     
     // Filter elements
     const filterSection = document.getElementById('filterSection');
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
+    const yearFilter = document.getElementById('yearFilter');
 
     let allRows = [];
+    let ladduRows = [];
 
     // Safely parse dates from Google Sheets which can come in various formats
     // e.g. "31/07/2026, 10:30:00" or "7/31/2026, 10:30:00 AM" or ISO strings
@@ -48,6 +54,52 @@ document.addEventListener('DOMContentLoaded', () => {
         return d.toLocaleDateString('en-IN', opts);
     }
 
+    function yearFrom(value) {
+        const date = parseSheetDate(value);
+        return date ? String(date.getFullYear()) : '';
+    }
+
+    function valueFrom(record, keys) {
+        const key = keys.find(candidate => Object.prototype.hasOwnProperty.call(record, candidate));
+        return key ? record[key] : '';
+    }
+
+    function toLadduRecords(data) {
+        if (!Array.isArray(data) || data.length < 2) return [];
+        const headers = data[0].map(header => String(header || '').trim().toLowerCase());
+        return data.slice(1).map(row => Object.fromEntries(headers.map((header, index) => [header, row[index]])));
+    }
+
+    function refreshYearOptions() {
+        const current = yearFilter.value;
+        const years = new Set();
+        allRows.forEach(item => { const year = yearFrom(item.row[0]); if (year) years.add(year); });
+        ladduRows.forEach(row => { const year = yearFrom(valueFrom(row, ['timestamp', 'date'])); if (year) years.add(year); });
+        yearFilter.innerHTML = '<option value="All">All Years</option>';
+        [...years].sort((a, b) => b.localeCompare(a)).forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearFilter.appendChild(option);
+        });
+        yearFilter.value = [...yearFilter.options].some(option => option.value === current) ? current : 'All';
+    }
+
+    function updateSummary(chandaRows) {
+        const chandaTotal = chandaRows.reduce((total, item) => {
+            return total + ((item.row[5] || 'Paid') === 'Paid' ? (parseFloat(item.row[3]) || 0) : 0);
+        }, 0);
+        const selectedYear = yearFilter.value;
+        const selectedLadduRows = ladduRows.filter(row => selectedYear === 'All' || yearFrom(valueFrom(row, ['timestamp', 'date'])) === selectedYear);
+        const ladduCollected = selectedLadduRows.reduce((total, row) => total + (parseFloat(valueFrom(row, ['amount collected', 'collected amount', 'paid amount', 'amount paid'])) || 0), 0);
+        const ladduAuctionTotal = selectedLadduRows.reduce((total, row) => total + (parseFloat(valueFrom(row, ['laddu amount', 'auction amount', 'total laddu amount', 'total amount'])) || 0), 0);
+        totalAmountEl.textContent = `₹${(chandaTotal + ladduCollected).toLocaleString('en-IN')}`;
+        chandaAmountEl.textContent = `₹${chandaTotal.toLocaleString('en-IN')}`;
+        ladduCollectedAmountEl.textContent = `₹${ladduCollected.toLocaleString('en-IN')}`;
+        ladduAuctionAmountEl.textContent = `₹${ladduAuctionTotal.toLocaleString('en-IN')}`;
+        selectedYearLabel.textContent = selectedYear === 'All' ? '(All Years)' : `(${selectedYear})`;
+    }
+
     function renderTable(rowsToRender) {
         tableBody.innerHTML = '';
 
@@ -61,12 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         cardsContainer.innerHTML = '';
 
-        let totalCollected = 0;
+        updateSummary(rowsToRender);
 
         if (rowsToRender.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No records match your search.</td></tr>';
             cardsContainer.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">No records match your search.</p>';
-            totalAmountEl.textContent = '₹0';
             return;
         }
 
@@ -86,8 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const status = row[5] || 'Paid';
-            if (status === 'Paid') totalCollected += amount;
-
             const badgeClass = status === 'Pending' ? 'badge-pending' : 'badge-paid';
             const actionHtml = status === 'Pending'
                 ? `<button class="action-btn" onclick="markAsPaid(${rowNumber}, this, ${amount}, '${name.replace(/'/g, "\\'")}', '${phone}')">Mark as Paid</button>`
@@ -139,12 +188,12 @@ document.addEventListener('DOMContentLoaded', () => {
             cardsContainer.appendChild(card);
         });
 
-        totalAmountEl.textContent = `₹${totalCollected.toLocaleString('en-IN')}`;
     }
 
     function applyFilters() {
         const searchTerm = searchInput.value.toLowerCase();
         const statusTerm = statusFilter.value;
+        const yearTerm = yearFilter.value;
 
         const filtered = allRows.filter(item => {
             const row = item.row;
@@ -155,27 +204,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchesSearch = name.includes(searchTerm) || phone.includes(searchTerm);
             const matchesStatus = (statusTerm === 'All') || (statusTerm === status);
 
-            return matchesSearch && matchesStatus;
+            const matchesYear = yearTerm === 'All' || yearFrom(row[0]) === yearTerm;
+            return matchesSearch && matchesStatus && matchesYear;
         });
 
         renderTable(filtered);
     }
 
-    function fetchRecords() {
+    async function fetchRecords() {
         loader.style.display = 'block';
         recordsTable.style.display = 'none';
         summaryCard.style.display = 'none';
         filterSection.style.display = 'none';
         tableBody.innerHTML = '';
 
-        fetch(GOOGLE_SCRIPT_URL)
-            .then(response => response.json())
-            .then(data => {
+        try {
+            const [chandaResponse, ladduResponse] = await Promise.all([
+                fetch(GOOGLE_SCRIPT_URL),
+                fetch(`${GOOGLE_SCRIPT_URL}?action=getLadduAuction`).catch(() => null)
+            ]);
+            const data = await chandaResponse.json();
+            const ladduData = ladduResponse ? await ladduResponse.json().catch(() => ({})) : {};
                 loader.style.display = 'none';
 
-                if (data.status === 'success' && data.data && data.data.length > 1) {
+                if (data.status === 'success' && data.data) {
                     // Save all rows with their original indices
                     allRows = data.data.slice(1).map((row, index) => ({ row, index }));
+                    ladduRows = toLadduRecords(ladduData.data);
+                    refreshYearOptions();
                     
                     applyFilters(); // Initial render
                     
@@ -186,18 +242,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No records found yet.</td></tr>';
                     recordsTable.style.display = 'table';
                 }
-            })
-            .catch(error => {
+        } catch (error) {
                 console.error('Error fetching data:', error);
                 loader.style.display = 'none';
                 tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: red;">Failed to load data. Please ensure your Google Script is updated.</td></tr>';
                 recordsTable.style.display = 'table';
-            });
+        }
     }
 
     // Event listeners for filters
     searchInput.addEventListener('input', applyFilters);
     statusFilter.addEventListener('change', applyFilters);
+    yearFilter.addEventListener('change', applyFilters);
 
     window.markAsPaid = function(rowNumber, btn, amount, name, phone) {
         if (!confirm('Are you sure you want to mark this contribution as Paid?')) return;

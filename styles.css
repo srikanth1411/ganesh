@@ -18,8 +18,9 @@
 body {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     background: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%);
     background-attachment: fixed;
     position: relative;
@@ -56,6 +57,29 @@ body {
     gap: 24px;
     padding-top: 20px;
 }
+
+.top-nav {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.top-nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 8px 13px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.top-nav a:hover { background: rgba(255, 255, 255, 0.32); }
 
 .header {
     text-align: center;
@@ -227,6 +251,112 @@ body {
     transform: translateY(-1px);
 }
 
+/* Laddu collection */
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.secondary-btn:disabled, .secondary-btn:disabled:hover {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.field-help {
+    color: #666;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.auction-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 16px;
+    border-radius: 14px;
+    background: rgba(255, 94, 0, 0.08);
+    border: 1px solid rgba(255, 94, 0, 0.18);
+}
+
+.auction-detail { display: flex; flex-direction: column; gap: 3px; }
+.auction-detail span { color: #666; font-size: 0.8rem; }
+.auction-detail strong { color: var(--text-dark); font-size: 1.05rem; }
+.auction-detail.due strong { color: var(--primary-color); }
+
+.signature-panel {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+    border: 2px dashed rgba(255, 94, 0, 0.45);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.88);
+}
+
+#signatureCanvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.clear-signature {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border: 0;
+    border-radius: 8px;
+    padding: 7px 10px;
+    background: rgba(51,51,51,0.08);
+    color: #555;
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.form-message { min-height: 1.2em; font-size: 0.9rem; font-weight: 600; }
+.form-message.error { color: #b42318; }
+.form-message.success { color: #147a45; }
+
+.photo-preview {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 94, 0, 0.2);
+}
+
+.camera-panel {
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.camera-preview {
+    display: block;
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    background: #222;
+    border-radius: 12px;
+}
+
+/* The preview classes set display:block, so explicitly honour the hidden state. */
+.camera-preview[hidden],
+.photo-preview[hidden] {
+    display: none !important;
+}
+
+.camera-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.camera-actions .clear-signature {
+    position: static;
+}
+
 /* Dashboard UI */
 .dashboard-container {
     max-width: 800px;
@@ -259,6 +389,23 @@ body {
     font-weight: 700;
     color: var(--primary-color);
 }
+
+.summary-breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+    text-align: left;
+}
+
+.summary-breakdown div {
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255, 94, 0, 0.07);
+}
+
+.summary-breakdown span { display: block; color: #666; font-size: 0.78rem; margin-bottom: 4px; }
+.summary-breakdown strong { color: var(--text-dark); font-size: 1rem; }
 
 .filter-section {
     display: flex;
@@ -526,6 +673,8 @@ tbody tr:hover {
         padding: 13px 14px;
     }
 
+    .summary-breakdown { grid-template-columns: 1fr; }
+
     /* Form inputs — 16px prevents zoom on iOS */
     .form-group input,
     .phone-input-wrapper input {
@@ -590,6 +739,8 @@ tbody tr:hover {
         min-height: 44px;
         line-height: 24px;
     }
+
+    .signature-panel { height: 160px; }
 }
 
 /* --- Small phones: iPhone SE, Pixel 4a, Galaxy A-series (≤390px) --- */

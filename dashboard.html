@@ -9,6 +9,11 @@
 </head>
 <body>
     <div class="background-decor"></div>
+    <nav class="top-nav" aria-label="Main navigation">
+        <a href="index.html">Chanda Details</a>
+        <a href="laddu-auction.html">Laddu Auction</a>
+        <a href="laddu-collection.html">Laddu Collection</a>
+    </nav>
     
     <div class="container dashboard-container">
         <div class="header">
@@ -17,8 +22,13 @@
         </div>
 
         <div class="summary-card" id="summaryCard" style="display: none;">
-            <h2>Total Amount Collected</h2>
+            <h2>Total Amount Collected <span id="selectedYearLabel"></span></h2>
             <div class="total-amount" id="totalAmount">₹0</div>
+            <div class="summary-breakdown">
+                <div><span>Chanda Collected</span><strong id="chandaAmount">₹0</strong></div>
+                <div><span>Laddu Collected</span><strong id="ladduCollectedAmount">₹0</strong></div>
+                <div><span>Laddu Auction Value</span><strong id="ladduAuctionAmount">₹0</strong></div>
+            </div>
         </div>
 
         <div class="filter-section" id="filterSection" style="display: none;">
@@ -27,6 +37,9 @@
                 <option value="All">All Statuses</option>
                 <option value="Paid">Paid</option>
                 <option value="Pending">Pending</option>
+            </select>
+            <select id="yearFilter" aria-label="Filter by year">
+                <option value="All">All Years</option>
             </select>
         </div>
 

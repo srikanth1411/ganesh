@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laddu Auction - Ganesh Chanda</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-decor"></div>
+    <nav class="top-nav" aria-label="Main navigation">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="index.html">Chanda Details</a>
+        <a href="laddu-collection.html">Laddu Collection</a>
+    </nav>
+    <main class="container">
+        <header class="header">
+            <h1>Ganesh Laddu Auction</h1>
+            <p>Record the winning bid with the winner's signature.</p>
+        </header>
+
+        <form id="ladduAuctionForm" class="glass-form" novalidate>
+            <div class="form-group">
+                <label for="winnerName">Auction Winner Name</label>
+                <input type="text" id="winnerName" placeholder="Enter full name" required>
+            </div>
+            <div class="form-group">
+                <label for="winnerPhone">WhatsApp Number</label>
+                <div class="phone-input-wrapper">
+                    <span class="country-code">+91</span>
+                    <input type="tel" id="winnerPhone" inputmode="numeric" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="auctionAmount">Winning Laddu Amount (₹)</label>
+                <input type="number" id="auctionAmount" inputmode="decimal" min="1" step="0.01" placeholder="Enter final bid amount" required>
+            </div>
+            <div class="form-group">
+                <label>Auction Winner Photo</label>
+                <div class="camera-panel">
+                    <video id="auctionCamera" class="camera-preview" autoplay playsinline muted aria-label="Camera preview"></video>
+                    <img id="auctionPhotoPreview" class="photo-preview" alt="Auction winner photo" hidden>
+                    <canvas id="auctionPhotoCanvas" hidden></canvas>
+                </div>
+                <div class="camera-actions">
+                    <button type="button" id="startCamera" class="secondary-btn">Open Camera</button>
+                    <button type="button" id="capturePhoto" class="secondary-btn" disabled>Take Photo</button>
+                    <button type="button" id="retakePhoto" class="clear-signature" hidden>Retake Photo</button>
+                </div>
+                <p class="field-help">Use the device camera to take a clear photo of the auction winner.</p>
+            </div>
+            <div class="form-group">
+                <label for="auctionSignature">Auction Winner Signature</label>
+                <div class="signature-panel">
+                    <canvas id="auctionSignature" aria-label="Auction winner signature pad"></canvas>
+                    <button type="button" id="clearAuctionSignature" class="clear-signature">Clear signature</button>
+                </div>
+                <p class="field-help">The winner should sign to confirm the final auction amount.</p>
+            </div>
+            <p id="auctionMessage" class="form-message" role="status" aria-live="polite"></p>
+            <button type="submit" id="saveAuctionBtn" class="submit-btn">Save Auction Details</button>
+        </form>
+
+        <div class="footer-msg">
+            <a href="laddu-collection.html" class="dashboard-link">Laddu Collection →</a>
+            <a href="index.html" class="dashboard-link">← Back to Chanda Form</a>
+        </div>
+    </main>
+    <script src="laddu-auction.js"></script>
+</body>
+</html>
