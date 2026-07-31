@@ -59,7 +59,8 @@ body {
 }
 
 .top-nav {
-    position: relative;
+    position: sticky;
+    top: 10px;
     z-index: 2;
     display: flex;
     justify-content: center;
@@ -107,8 +108,30 @@ body {
     border-radius: 999px;
     width: 42px;
     height: 42px;
-    font-size: 1.25rem;
-    line-height: 1;
+    padding: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.nav-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    margin: 4px auto;
+    border-radius: 99px;
+    background: white;
+    transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.top-nav.nav-open .nav-toggle span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.top-nav.nav-open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.top-nav.nav-open .nav-toggle span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
 }
 
 .top-nav a:hover {
@@ -791,14 +814,16 @@ tbody tr:hover {
 
     .top-nav {
         padding: 10px;
-        gap: 6px;
+        gap: 8px;
         align-items: center;
+        border-radius: 18px;
     }
 
     .nav-toggle {
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        margin-left: auto;
     }
 
     .top-nav-links {
@@ -811,13 +836,20 @@ tbody tr:hover {
 
     .top-nav.nav-open .top-nav-links {
         display: flex;
+        animation: fadeIn 0.22s ease-out;
     }
 
     .top-nav a {
         font-size: 0.85rem;
-        padding: 8px 11px;
+        padding: 10px 12px;
         min-height: 38px;
         width: 100%;
+        justify-content: flex-start;
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    .logout-btn {
+        justify-content: center !important;
     }
 
     .container {
