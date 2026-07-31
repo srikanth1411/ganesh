@@ -1,12 +1,16 @@
 # Laddu Collection Sheet setup
 
-The configured spreadsheet ID is `1A3Hy8iUAgc53YMvYfMPFz1c9wTnOa5rfhUttGQDPHak`. The complete copy-paste Apps Script is available in `google-apps-script.js`.
+The configured spreadsheet ID is `1A3Hy8iUAgc53YMvYfMPFz1c9wTnOa5rfhUttGQDPHak`. Photos and signatures are stored in Drive folder `1im0n9ooBU_HeEb9tiLVPPPBy3FsiQ63X`. The complete copy-paste Apps Script is available in `google-apps-script.js`.
 
 The Laddu Collection page expects the Google Apps Script web app to expose two actions:
 
 - `GET ?action=getLadduAuction` — returns the Laddu auction data as `{ status: 'success', data: [...] }`, with the first row as headers.
 - `POST action=recordLadduAuction` — records the winning bid and winner signature.
 - `POST action=recordLadduPayment` — records each part payment and its signature.
+- `POST action=recordChandaPayment` — records a Chanda part payment and marks it paid only when fully collected.
+- `GET ?action=getSpends` and `POST action=recordSpend` — create and read the Spends sheet for expense tracking.
+
+Spends can optionally include a bill photo. The image is saved in the configured Drive folder and its link is stored in the `Bill Photo` column.
 
 ## Auction sheet columns
 

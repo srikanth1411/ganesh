@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    if (!window.GaneshAuth?.requireLogin()) return;
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', event => {
+            event.preventDefault();
+            window.GaneshAuth.signOut();
+            window.location.href = 'login.html';
+        });
+    }
+
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8QbbQ1XE3nDjED5ZFtZacFu5vNXs6wGh-GN0YULF0ApbqDlpreeFxA7Ri7STr3QDSxQ/exec';
     const form = document.getElementById('ladduCollectionForm');
     const phoneInput = document.getElementById('ladduPhone');
@@ -10,10 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('signatureCanvas');
     const clearBtn = document.getElementById('clearSignature');
     const ctx = canvas.getContext('2d');
+    const query = new URLSearchParams(window.location.search);
+    const isChandaCollection = query.get('source') === 'chanda';
+    const selectedRecordYear = query.get('year');
 
     let auction = null;
     let drawing = false;
     let signatureStarted = false;
+
+    const requestedPhone = query.get('phone') || '';
+    if (requestedPhone) phoneInput.value = requestedPhone.replace(/^91/, '');
+
+    if (isChandaCollection) {
+        document.getElementById('collectionTitle').textContent = 'Ganesh Chanda Collection';
+        document.getElementById('collectionDescription').textContent = 'Record part payments against a Chanda contribution.';
+        document.getElementById('phoneHelp').textContent = 'The pending Chanda record will be loaded from this mobile number.';
+        document.getElementById('lookupBtn').textContent = 'Find Chanda Details';
+        document.getElementById('totalLabel').textContent = 'Total Chanda Amount';
+    }
 
     function cleanPhone(value) {
         const digits = value.replace(/\D/g, '');
@@ -24,9 +49,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return Number(String(value ?? '').replace(/[^0-9.]/g, '')) || 0;
     }
 
+    function recordYear(value) {
+        const text = String(value || '').trim();
+        const nativeDate = new Date(text);
+        if (!Number.isNaN(nativeDate.getTime())) return String(nativeDate.getFullYear());
+        const match = text.match(/(?:\d{1,2})\/(?:\d{1,2})\/(\d{4})/);
+        return match ? match[1] : '';
+    }
+
     function setMessage(text, type = '') {
         message.textContent = text;
         message.className = `form-message ${type}`;
+    }
+
+    function sendWhatsApp(phone, text) {
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     // Accepts common column names so the auction sheet can use either Laddu Amount,
@@ -64,29 +101,33 @@ document.addEventListener('DOMContentLoaded', () => {
         lookupBtn.textContent = 'Finding…';
         setMessage('');
         try {
-            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getLadduAuction`);
+            const response = await fetch(isChandaCollection ? GOOGLE_SCRIPT_URL : `${GOOGLE_SCRIPT_URL}?action=getLadduAuction`);
             const payload = await response.json();
             const records = toRecords(payload.data);
-            const record = records.find(item => cleanPhone(String(valueFrom(item, ['whatsapp number', 'mobile number', 'phone', 'mobile']))) === phone);
+            const record = records.find(item => {
+                const matchesPhone = cleanPhone(String(valueFrom(item, ['whatsapp number', 'mobile number', 'phone', 'mobile']))) === phone;
+                const matchesYear = !selectedRecordYear || recordYear(valueFrom(item, ['timestamp', 'date'])) === selectedRecordYear;
+                return matchesPhone && matchesYear;
+            });
             if (!record) throw new Error('not-found');
 
             const name = valueFrom(record, ['name', 'devotee name', 'auction winner', 'winner name']);
-            const total = numberValue(valueFrom(record, ['laddu amount', 'auction amount', 'total laddu amount', 'total amount']));
+            const total = numberValue(valueFrom(record, isChandaCollection ? ['amount', 'total amount', 'chanda amount'] : ['laddu amount', 'auction amount', 'total laddu amount', 'total amount']));
             const collected = numberValue(valueFrom(record, ['amount collected', 'collected amount', 'paid amount', 'amount paid']));
             if (!name || total <= 0) throw new Error('incomplete');
 
             auction = { name, phone, total, collected, balance: Math.max(total - collected, 0) };
             drawAuctionDetails();
-            setMessage(auction.balance > 0 ? 'Auction details loaded. Record the payment and signature below.' : 'This Laddu amount has already been fully collected.', 'success');
+            setMessage(auction.balance > 0 ? 'Details loaded. Record the payment and signature below.' : 'This amount has already been fully collected.', 'success');
         } catch (error) {
             auction = null;
             auctionDetails.hidden = true;
             paymentInput.disabled = true;
             collectBtn.disabled = true;
-            setMessage(error.message === 'not-found' ? 'No Laddu auction record was found for this number.' : 'Could not load the auction details. Please check the Sheet setup and try again.', 'error');
+            setMessage(error.message === 'not-found' ? `No ${isChandaCollection ? 'Chanda' : 'Laddu auction'} record was found for this number.` : 'Could not load the details. Please check the Sheet setup and try again.', 'error');
         } finally {
             lookupBtn.disabled = false;
-            lookupBtn.textContent = 'Find Auction Details';
+            lookupBtn.textContent = isChandaCollection ? 'Find Chanda Details' : 'Find Auction Details';
         }
     }
 
@@ -150,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         collectBtn.disabled = true;
         collectBtn.textContent = 'Recording…';
         const formData = new FormData();
-        formData.append('action', 'recordLadduPayment');
+        formData.append('action', isChandaCollection ? 'recordChandaPayment' : 'recordLadduPayment');
         formData.append('Name', auction.name);
         formData.append('WhatsApp Number', auction.phone);
         formData.append('Total Laddu Amount', auction.total);
@@ -158,10 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('Balance After Payment', auction.balance - amount);
         formData.append('Signature', canvas.toDataURL('image/png'));
         formData.append('Timestamp', new Date().toLocaleString('en-IN'));
+        if (isChandaCollection) formData.append('Total Chanda Amount', auction.total);
 
         try {
             await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData, mode: 'no-cors' });
             setMessage('Payment record sent successfully. Please verify it in the Sheet.', 'success');
+            const balanceAfterPayment = auction.balance - amount;
+            const collectionName = isChandaCollection ? 'Ganesh Chanda' : 'Ganesh Laddu';
+            const paymentMessage = balanceAfterPayment > 0
+                ? `Namaskaram ${auction.name} garu,\n\nWe received ₹${amount.toLocaleString('en-IN')} towards your ${collectionName} contribution. Your remaining balance is ₹${balanceAfterPayment.toLocaleString('en-IN')}.\n\nThank you! 🙏\n\nGanapati Bappa Morya!`
+                : `Namaskaram ${auction.name} garu,\n\nWe received your final payment of ₹${amount.toLocaleString('en-IN')} towards the ${collectionName}. Your contribution is now fully paid.\n\nThank you! 🙏\n\nGanapati Bappa Morya!`;
+            sendWhatsApp(auction.phone, paymentMessage);
             auction.collected += amount;
             auction.balance -= amount;
             paymentInput.value = '';
@@ -175,4 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
             collectBtn.disabled = !auction || auction.balance <= 0;
         }
     });
+
+    // Dashboard links include a phone number (and, for Laddu records, the year).
+    // Load that exact record immediately instead of requiring a second lookup tap.
+    if (phoneInput.value) lookupAuction();
 });

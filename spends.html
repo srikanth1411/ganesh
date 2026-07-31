@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganesh Spends</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-decor"></div>
+    <nav class="top-nav" aria-label="Main navigation">
+        <a href="staff-dashboard.html">Home</a>
+        <a href="dashboard.html">Chanda Dashboard</a>
+        <a href="laddu-dashboard.html">Laddu Dashboard</a>
+        <a href="spends-dashboard.html">Spends Dashboard</a>
+        <a href="laddu-auction.html">Laddu Auction</a>
+        <a href="laddu-collection.html">Laddu Collection</a>
+        <a href="spends.html">Spends</a>
+        <a href="#" id="logoutBtn" class="logout-btn">Logout</a>
+    </nav>
+    <main class="container">
+        <header class="header">
+            <h1>Ganesh Spends</h1>
+            <p>Record every expense for the Ganesh celebrations.</p>
+        </header>
+        <form id="spendForm" class="glass-form">
+            <div class="form-group">
+                <label for="spendDate">Spend Date</label>
+                <input type="date" id="spendDate" required>
+            </div>
+            <div class="form-group">
+                <label for="spendType">Spend Type</label>
+                <select id="spendType" required>
+                    <option value="">Select a type</option>
+                    <option>Decoration</option><option>Food & Prasadam</option><option>Pooja Items</option>
+                    <option>Sound & Lighting</option><option>Transport</option><option>Printing</option><option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="spendItem">Item / Purpose</label>
+                <input type="text" id="spendItem" placeholder="e.g. Flower decoration" required>
+            </div>
+            <div class="form-group">
+                <label for="spendAmount">Amount Spent (₹)</label>
+                <input type="number" id="spendAmount" min="1" step="0.01" inputmode="decimal" placeholder="Enter amount" required>
+            </div>
+            <div class="form-group">
+                <label for="spendNotes">Notes (Optional)</label>
+                <input type="text" id="spendNotes" placeholder="Vendor, bill number, or details">
+            </div>
+            <div class="form-group">
+                <label>Bill Photo (Optional)</label>
+                <div class="file-actions">
+                    <button type="button" id="openBillCamera" class="secondary-btn">Take Photo</button>
+                    <label for="billFile" class="secondary-btn">Choose File</label>
+                </div>
+                <div id="billCameraPanel" class="camera-panel" hidden>
+                    <video id="billCameraPreview" class="camera-preview" autoplay playsinline muted></video>
+                    <canvas id="billCameraCanvas" hidden></canvas>
+                    <div class="camera-actions bill-camera-actions">
+                        <button type="button" id="captureBillPhoto" class="secondary-btn">Capture Bill</button>
+                        <button type="button" id="closeBillCamera" class="clear-signature">Cancel</button>
+                    </div>
+                </div>
+                <input type="file" id="billFile" class="visually-hidden" accept="image/*">
+                <img id="billPhotoPreview" class="photo-preview" alt="Bill photo preview" hidden>
+                <p class="field-help">Take a new photo of the bill or choose an existing image file.</p>
+            </div>
+            <p id="spendMessage" class="form-message" role="status" aria-live="polite"></p>
+            <button type="submit" id="saveSpend" class="submit-btn">Record Spend</button>
+        </form>
+        <div class="footer-msg"><a href="spends-dashboard.html" class="dashboard-link">View Spends Dashboard</a></div>
+    </main>
+    <script src="auth.js"></script>
+    <script src="spends.js"></script>
+</body>
+</html>

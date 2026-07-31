@@ -10,9 +10,14 @@
 <body>
     <div class="background-decor"></div>
     <nav class="top-nav" aria-label="Main navigation">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="index.html">Chanda Details</a>
+        <a href="staff-dashboard.html">Home</a>
+        <a href="dashboard.html">Chanda Dashboard</a>
+        <a href="laddu-dashboard.html">Laddu Dashboard</a>
+        <a href="spends-dashboard.html">Spends Dashboard</a>
+        <a href="laddu-auction.html">Laddu Auction</a>
         <a href="laddu-collection.html">Laddu Collection</a>
+        <a href="spends.html">Spends</a>
+        <a href="#" id="logoutBtn" class="logout-btn">Logout</a>
     </nav>
     <main class="container">
         <header class="header">
@@ -51,12 +56,12 @@
                 <p class="field-help">Use the device camera to take a clear photo of the auction winner.</p>
             </div>
             <div class="form-group">
-                <label for="auctionSignature">Auction Winner Signature</label>
+                <label for="signatureCanvas">Auction Winner Signature</label>
                 <div class="signature-panel">
-                    <canvas id="auctionSignature" aria-label="Auction winner signature pad"></canvas>
-                    <button type="button" id="clearAuctionSignature" class="clear-signature">Clear signature</button>
+                    <canvas id="signatureCanvas" aria-label="Signature pad. Sign here with your finger or mouse."></canvas>
+                    <button type="button" id="clearSignature" class="clear-signature">Clear signature</button>
                 </div>
-                <p class="field-help">The winner should sign to confirm the final auction amount.</p>
+                <p class="field-help">Sign inside the box using a finger, stylus, or mouse.</p>
             </div>
             <p id="auctionMessage" class="form-message" role="status" aria-live="polite"></p>
             <button type="submit" id="saveAuctionBtn" class="submit-btn">Save Auction Details</button>
@@ -67,6 +72,7 @@
             <a href="index.html" class="dashboard-link">← Back to Chanda Form</a>
         </div>
     </main>
+    <script src="auth.js"></script>
     <script src="laddu-auction.js"></script>
 </body>
 </html>

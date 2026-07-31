@@ -1,8 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    if (!window.GaneshAuth?.requireLogin()) return;
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', event => {
+            event.preventDefault();
+            window.GaneshAuth.signOut();
+            window.location.href = 'login.html';
+        });
+    }
+
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8QbbQ1XE3nDjED5ZFtZacFu5vNXs6wGh-GN0YULF0ApbqDlpreeFxA7Ri7STr3QDSxQ/exec';
     const form = document.getElementById('ladduAuctionForm');
-    const canvas = document.getElementById('auctionSignature');
+    const canvas = document.getElementById('signatureCanvas');
     const ctx = canvas.getContext('2d');
+    const clearBtn = document.getElementById('clearSignature');
     const message = document.getElementById('auctionMessage');
     const saveBtn = document.getElementById('saveAuctionBtn');
     const camera = document.getElementById('auctionCamera');
@@ -12,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const capturePhotoBtn = document.getElementById('capturePhoto');
     const retakePhotoBtn = document.getElementById('retakePhoto');
     let drawing = false;
-    let signed = false;
+    let signatureStarted = false;
     let photoDataUrl = '';
     let cameraStream = null;
 
@@ -21,9 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
         message.className = `form-message ${type}`;
     }
 
-    function resizeCanvas() {
+    function sendWhatsApp(phone, text) {
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Kept identical to the Laddu Collection signature pad.
+    function sizeCanvas() {
         const ratio = window.devicePixelRatio || 1;
         const rect = canvas.getBoundingClientRect();
+        const image = signatureStarted ? canvas.toDataURL() : null;
         canvas.width = rect.width * ratio;
         canvas.height = rect.height * ratio;
         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -31,31 +49,36 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.lineJoin = 'round';
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#333';
+        if (image) {
+            const saved = new Image();
+            saved.onload = () => ctx.drawImage(saved, 0, 0, rect.width, rect.height);
+            saved.src = image;
+        }
     }
 
-    function point(event) {
+    function position(event) {
         const rect = canvas.getBoundingClientRect();
         return { x: event.clientX - rect.left, y: event.clientY - rect.top };
     }
 
     canvas.addEventListener('pointerdown', event => {
         drawing = true;
-        signed = true;
+        signatureStarted = true;
         canvas.setPointerCapture(event.pointerId);
-        const start = point(event);
+        const start = position(event);
         ctx.beginPath();
         ctx.moveTo(start.x, start.y);
     });
     canvas.addEventListener('pointermove', event => {
         if (!drawing) return;
-        const next = point(event);
+        const next = position(event);
         ctx.lineTo(next.x, next.y);
         ctx.stroke();
     });
     ['pointerup', 'pointercancel'].forEach(type => canvas.addEventListener(type, () => { drawing = false; }));
-    document.getElementById('clearAuctionSignature').addEventListener('click', () => { signed = false; resizeCanvas(); });
-    window.addEventListener('resize', () => { if (!signed) resizeCanvas(); });
-    resizeCanvas();
+    clearBtn.addEventListener('click', () => { signatureStarted = false; sizeCanvas(); });
+    window.addEventListener('resize', sizeCanvas);
+    sizeCanvas();
 
     function stopCamera() {
         cameraStream?.getTracks().forEach(track => track.stop());
@@ -119,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setMessage('Please take or select the auction winner photo.', 'error');
             return;
         }
-        if (!signed) {
+        if (!signatureStarted) {
             setMessage('Please collect the auction winner signature.', 'error');
             return;
         }
@@ -139,14 +162,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: data, mode: 'no-cors' });
             setMessage('Auction details and signature have been sent. Please verify them in the Sheet.', 'success');
+            sendWhatsApp(`91${phoneDigits}`, `Namaskaram ${name} garu,\n\nYour Ganesh Laddu auction amount of ₹${amount.toLocaleString('en-IN')} has been recorded successfully.\n\nThank you for your support! May Lord Ganesha bless you. 🙏\n\nGanapati Bappa Morya!`);
             form.reset();
-            signed = false;
+            signatureStarted = false;
             photoDataUrl = '';
             photoPreview.removeAttribute('src');
             photoPreview.hidden = true;
             retakePhotoBtn.hidden = true;
             capturePhotoBtn.disabled = true;
-            resizeCanvas();
+            sizeCanvas();
         } catch (error) {
             setMessage('Could not save the auction details. Please try again.', 'error');
         } finally {
