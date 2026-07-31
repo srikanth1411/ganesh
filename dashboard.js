@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilters();
 
             // Send WhatsApp message
-            const message = `Namaskaram ${name} garu,\n\nWe have successfully received your Ganesh Chanda contribution of ₹${amount}. Thank you for fulfilling your pledge!\n\nMay Lord Ganesha bless you with health, wealth, and happiness! 🙏\n\nGanapati Bappa Morya! \n\nThanks & Regards \nSikhwada Youth Association`;
+            const message = `🙏 *Sri Ganeshaya Namah* 🙏\n\nNamaskaram ${name} garu,\n\nThank you! 🙏 We have successfully received your *Ganesh Chanda* contribution of *₹${amount}*.\n\nYour generous support helps us celebrate *Sri Ganesh Utsavam* with devotion and grandeur.\n\nMay Lord Ganesha bless you and your family with happiness, prosperity, good health, and success. 🙏\n\n*Ganapati Bappa Morya!* ❤️\n\nThanks & Regards,\nSikhwada Youth Association`;
             const encodedMessage = encodeURIComponent(message);
             window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
         })

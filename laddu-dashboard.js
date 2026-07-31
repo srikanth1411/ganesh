@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notify.className = 'action-btn secondary-action';
             notify.textContent = 'Notify';
             notify.addEventListener('click', () => {
-                const notifyMessage = `Namaskaram ${name} garu,\n\nCongratulations on winning the Ganesh Laddu auction for ${format(total)}. Your winner details have been recorded successfully. Please visit the collection desk to complete the remaining payment.\n\nMay Lord Ganesha bless you with happiness, prosperity, and peace. 🙏\n\nGanapati Bappa Morya!\n\nThanks & Regards \nSikhwada Youth Association`;
+                const notifyMessage = `🙏 *Sri Ganeshaya Namah* 🙏\n\nNamaskaram ${name} garu,\n\nCongratulations! 🎉 You have successfully won the *Sri Ganesh Laddu Auction* with a winning bid of *${format(total)}*.\n\nKindly complete the payment using the details below:\n\n👤 *UPI Name:* Sara Srikanth\n📱 *UPI Number:* 7702219049\n\nMay Lord Ganesha bless you with happiness, prosperity, and peace. 🙏\n\n*Ganapati Bappa Morya!* ❤️\n\nThanks & Regards,\nSikhwada Youth Association`;
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(notifyMessage)}`, '_blank');
             });
             actions.appendChild(notify);
