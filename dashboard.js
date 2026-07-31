@@ -15,6 +15,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allRows = [];
 
+    // Safely parse dates from Google Sheets which can come in various formats
+    // e.g. "31/07/2026, 10:30:00" or "7/31/2026, 10:30:00 AM" or ISO strings
+    function parseSheetDate(value) {
+        if (!value) return null;
+
+        // Already a JS Date object (when Apps Script returns a Date)
+        if (value instanceof Date) return value;
+
+        const str = String(value).trim();
+        if (!str) return null;
+
+        // Try native parse first (works for ISO and many formats)
+        let d = new Date(str);
+        if (!isNaN(d.getTime())) return d;
+
+        // Handle DD/MM/YYYY or DD/MM/YYYY, HH:MM:SS (Indian locale format)
+        const ddmmyyyy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (ddmmyyyy) {
+            d = new Date(`${ddmmyyyy[3]}-${ddmmyyyy[2].padStart(2,'0')}-${ddmmyyyy[1].padStart(2,'0')}`);
+            if (!isNaN(d.getTime())) return d;
+        }
+
+        return null;
+    }
+
+    function formatDate(value, includeYear = false) {
+        const d = parseSheetDate(value);
+        if (!d) return String(value || '-');
+        const opts = { day: '2-digit', month: 'short' };
+        if (includeYear) opts.year = 'numeric';
+        return d.toLocaleDateString('en-IN', opts);
+    }
+
     function renderTable(rowsToRender) {
         tableBody.innerHTML = '';
 
@@ -41,19 +74,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const { row, index } = item;
             const rowNumber = index + 2;
 
-            const timestamp = new Date(row[0]).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+            const timestamp = formatDate(row[0]);
             const name = row[1];
             const phone = row[2];
             const amount = parseFloat(row[3]) || 0;
 
             let dueDateFormatted = '-';
             if (row[4]) {
-                const d = new Date(row[4]);
-                if (!isNaN(d.getTime())) {
-                    dueDateFormatted = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-                } else {
-                    dueDateFormatted = row[4];
-                }
+                const formatted = formatDate(row[4], true);
+                dueDateFormatted = formatted;
             }
 
             const status = row[5] || 'Paid';

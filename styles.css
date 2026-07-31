@@ -25,6 +25,7 @@ body {
     position: relative;
     overflow-x: hidden;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 20px;
     padding-bottom: 48px;
 }
@@ -229,6 +230,9 @@ body {
 /* Dashboard UI */
 .dashboard-container {
     max-width: 800px;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
 }
 
 .summary-card {
