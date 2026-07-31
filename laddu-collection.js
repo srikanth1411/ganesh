@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         collectBtn.textContent = 'Recording…';
         const formData = new FormData();
         formData.append('action', isChandaCollection ? 'recordChandaPayment' : 'recordLadduPayment');
+        window.GaneshAuth?.addUser(formData);
         formData.append('Name', auction.name);
         formData.append('WhatsApp Number', auction.phone);
         formData.append('Total Laddu Amount', auction.total);

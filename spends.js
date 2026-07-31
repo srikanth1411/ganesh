@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.disabled = true; button.textContent = 'Saving…';
         const data = new FormData();
         data.append('action', 'recordSpend');
+        window.GaneshAuth?.addUser(data);
         data.append('Date', dateInput.value);
         data.append('Spend Type', document.getElementById('spendType').value);
         data.append('Item / Purpose', document.getElementById('spendItem').value.trim());

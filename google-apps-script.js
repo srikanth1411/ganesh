@@ -32,20 +32,70 @@ function doGet(e) {
 
 function doPost(e) {
   try {
-    const action = (e.parameter.action || '').trim();
+    const data = getRequestData_(e);
+    const action = (data.action || '').trim();
     let result = { status: 'success' };
-    if (action === 'login') result = login_(e.parameter);
-    else if (action === 'add') addChanda_(e.parameter);
-    else if (action === 'updateStatus') updateChandaStatus_(e.parameter);
-    else if (action === 'recordChandaPayment') recordChandaPayment_(e.parameter);
-    else if (action === 'recordLadduAuction') recordLadduAuction_(e.parameter);
-    else if (action === 'recordLadduPayment') recordLadduPayment_(e.parameter);
-    else if (action === 'recordSpend') recordSpend_(e.parameter);
+    if (action === 'login') result = login_(data);
+    else if (action === 'add') addChanda_(data);
+    else if (action === 'updateStatus') updateChandaStatus_(data);
+    else if (action === 'recordChandaPayment') recordChandaPayment_(data);
+    else if (action === 'recordLadduAuction') recordLadduAuction_(data);
+    else if (action === 'recordLadduPayment') recordLadduPayment_(data);
+    else if (action === 'recordSpend') recordSpend_(data);
     else throw new Error('Unknown action: ' + action);
     return json_(result);
   } catch (error) {
     return json_({ status: 'error', message: error.message });
   }
+}
+
+function getRequestData_(e) {
+  const data = {};
+  const parameter = e && e.parameter ? e.parameter : {};
+  Object.keys(parameter).forEach(key => {
+    data[key] = parameter[key];
+  });
+
+  if (e && e.postData) {
+    const contentType = String(e.postData.type || '').toLowerCase();
+    const payload = e.postData.getDataAsString ? e.postData.getDataAsString() : String(e.postData.contents || '');
+    if (!payload) return data;
+
+    if (contentType.includes('application/x-www-form-urlencoded')) {
+      const parsed = payload.split('&').reduce((acc, entry) => {
+        if (!entry) return acc;
+        const [rawKey, ...rawValueParts] = entry.split('=');
+        const key = decodeURIComponent(rawKey.replace(/\+/g, ' '));
+        const value = decodeURIComponent((rawValueParts.join('=') || '').replace(/\+/g, ' '));
+        acc[key] = value;
+        return acc;
+      }, {});
+      Object.keys(parsed).forEach(key => {
+        data[key] = parsed[key];
+      });
+      return data;
+    }
+
+    if (contentType.includes('multipart/form-data')) {
+      const boundary = contentType.split('boundary=')[1];
+      if (!boundary) return data;
+      const boundaryMarker = `--${boundary}`;
+      const parts = payload.split(boundaryMarker).filter(part => part && part.trim() !== '--' && part.trim() !== '');
+      parts.forEach(part => {
+        const lines = part.split(/\r\n|\n/);
+        const headerLine = lines.find(line => line.includes('name='));
+        if (!headerLine) return;
+        const nameMatch = headerLine.match(/name="([^"]+)"/);
+        const name = nameMatch ? nameMatch[1] : '';
+        if (!name) return;
+        const value = lines.slice(2).join('\n').trim();
+        if (value) data[name] = value;
+      });
+      return data;
+    }
+  }
+
+  return data;
 }
 
 function addChanda_(data) {

@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.textContent = 'Saving…';
         const data = new FormData();
         data.append('action', 'recordLadduAuction');
+        window.GaneshAuth?.addUser(data);
         data.append('Name', name);
         data.append('WhatsApp Number', `91${phoneDigits}`);
         data.append('Laddu Amount', amount);
