@@ -16,22 +16,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const yearSpendTotal = document.getElementById('yearSpendTotal');
+    const todaySpendTotal = document.getElementById('todaySpendTotal');
     const pendingChandaTotal = document.getElementById('pendingChandaTotal');
     const pendingLadduTotal = document.getElementById('pendingLadduTotal');
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8QbbQ1XE3nDjED5ZFtZacFu5vNXs6wGh-GN0YULF0ApbqDlpreeFxA7Ri7STr3QDSxQ/exec';
 
     const money = value => Number(String(value || '').replace(/[^0-9.]/g, '')) || 0;
     const formatCurrency = value => `₹${value.toLocaleString('en-IN')}`;
-    const currentYear = new Date().getFullYear();
+    const today = new Date().toISOString().slice(0, 10);
 
-    function matchesThisYear(value) {
+    function matchesToday(value) {
         const text = String(value || '').trim();
         if (!text) return false;
-        // If it's in yyyy-mm-dd or similar iso format, attempt to read year directly
-        if (/^\d{4}-\d{2}-\d{2}/.test(text)) return Number(text.slice(0, 4)) === currentYear;
+        if (text.includes('-')) return text.slice(0, 10) === today;
         const dt = new Date(text);
-        return !Number.isNaN(dt.getTime()) && dt.getFullYear() === currentYear;
+        return !Number.isNaN(dt.getTime()) && dt.toISOString().slice(0, 10) === today;
     }
 
     function normalizeHeaders(headers) {
@@ -84,11 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const records = spendsData.data.slice(1).map(row => toRowObject(headers, row));
                 todaySpend = records.reduce((sum, row) => {
                     const amount = money(row['amount']);
-                    return sum + (matchesThisYear(row['date']) ? amount : 0);
+                    return sum + (matchesToday(row['date']) ? amount : 0);
                 }, 0);
             }
 
-            if (yearSpendTotal) yearSpendTotal.textContent = formatCurrency(todaySpend);
+            if (todaySpendTotal) todaySpendTotal.textContent = formatCurrency(todaySpend);
             if (pendingChandaTotal) pendingChandaTotal.textContent = formatCurrency(pendingChanda);
             if (pendingLadduTotal) pendingLadduTotal.textContent = formatCurrency(pendingLaddu);
         } catch (error) {

@@ -21,21 +21,7 @@ function doGet(e) {
     }
     if (action === 'getSpends') {
       const sheet = ensureSheet_(ss, SPENDS_SHEET_NAME, ['Date', 'Spend Type', 'Item / Purpose', 'Amount', 'Notes', 'Bill Photo', 'Timestamp']);
-      const all = sheet.getDataRange().getDisplayValues();
-      // Optional: filter by year if provided as query param (?action=getSpends&year=2026)
-      const yearParam = e.parameter.year ? Number(e.parameter.year) : 0;
-      if (yearParam && !Number.isNaN(yearParam)) {
-        const headers = all[0] || [];
-        const rows = (all.length > 1 ? all.slice(1) : []).filter(row => {
-          const dateStr = String(row[0] || '').trim();
-          if (!dateStr) return false;
-          if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) return Number(dateStr.slice(0, 4)) === yearParam;
-          const dt = new Date(dateStr);
-          return !Number.isNaN(dt.getTime()) && dt.getFullYear() === yearParam;
-        });
-        return json_({ status: 'success', data: [headers].concat(rows) });
-      }
-      return json_({ status: 'success', data: all });
+      return json_({ status: 'success', data: sheet.getDataRange().getDisplayValues() });
     }
     const sheet = getChandaSheet_(ss);
     return json_({ status: 'success', data: sheet.getDataRange().getDisplayValues() });
