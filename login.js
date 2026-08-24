@@ -6,15 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async event => {
         event.preventDefault();
         button.disabled = true; button.textContent = 'Checking…';
-        const name = document.getElementById('staffName').value.trim();
-        const pin = document.getElementById('staffPin').value;
-        // Fast local-login for Srikanth (bypass sheet fetch)
-        if (name.toLowerCase() === 'srikanth' && pin === '141120') {
-            localStorage.setItem('ganesh_staff_user', JSON.stringify({ name: 'srikanth', role: 'Staff' }));
-            window.location.href = new URLSearchParams(window.location.search).get('returnTo') || 'staff-dashboard.html';
-            return;
-        }
-        const data = new URLSearchParams({ action: 'login', Name: name, PIN: pin });
+        const data = new URLSearchParams({ action: 'login', Name: document.getElementById('staffName').value.trim(), PIN: document.getElementById('staffPin').value });
         try {
             const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: data });
             const result = await response.json();
